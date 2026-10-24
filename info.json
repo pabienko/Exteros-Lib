@@ -1,0 +1,13 @@
+{
+  "name": "exteros-lib",
+  "version": "1.0.0",
+  "title": "Exteros' Lib",
+  "author": "Exteros",
+  "contact": "https://github.com/pabienko",
+  "homepage": "https://github.com/pabienko/Exteros-Lib",
+  "factorio_version": "2.1",
+  "dependencies": [
+    "base >= 2.1.23"
+  ],
+  "description": "Shared library and settings hub for Exteros' mods. Works as a plain code library for other mods too: without any Exteros mod installed it adds nothing to the game."
+}
