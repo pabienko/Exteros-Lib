@@ -1,0 +1,7 @@
+---------------------------------------------------------------------------------------------------
+Version: 1.0.0
+Date: 14. 11. 2026
+  Major Features:
+    - First release: the library mod every Exteros mod requires.
+    - Exteros' Hub: one settings window (SHIFT + E) for every installed Exteros mod, with export/import as one line of text.
+    - Adds nothing to the game by itself.
