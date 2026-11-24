@@ -3,6 +3,7 @@ local manifest_lib = require("__exteros-lib__.internal.manifest")
 local lib_storage = require("__exteros-lib__.storage")
 local lib_color = require("__exteros-lib__.color")
 local lib_values = require("__exteros-lib__.internal.values")
+local lib_settings = require("__exteros-lib__.internal.settings")
 
 local M = {}
 
@@ -592,19 +593,19 @@ end
 
 ---@param player LuaPlayer
 ---@param text string
----@return LocalisedString, boolean
+---@return LocalisedString, boolean, boolean
 local function run_import(player, text)
   local trimmed = text:gsub("^%s+", ""):gsub("%s+$", "")
   if trimmed == "" then
-    return { "exteros-lib-hub.error-empty" }, false
+    return { "exteros-lib-hub.error-empty" }, false, false
   end
 
   local envelope, err = lib_values.decode(trimmed)
   if envelope == nil then
     if err == "unsupported format" then
-      return { "exteros-lib-hub.error-format" }, false
+      return { "exteros-lib-hub.error-format" }, false, false
     end
-    return { "exteros-lib-hub.error-invalid" }, false
+    return { "exteros-lib-hub.error-invalid" }, false, false
   end
 
   local mod_names = {}
@@ -645,7 +646,7 @@ local function run_import(player, text)
     table.insert(message, line)
   end
 
-  return message, has_global_change
+  return message, has_global_change, true
 end
 
 ---@param body LuaGuiElement
@@ -717,16 +718,22 @@ local function build_transfer_footer(body, player)
 end
 
 ---@param player LuaPlayer
+---@return nil
+local function refresh_others(player)
+  for _, other in pairs(game.players) do
+    if other.valid and other.index ~= player.index and M.frame(other) ~= nil then
+      M.render(other)
+    end
+  end
+end
+
+---@param player LuaPlayer
 ---@param has_global_change boolean
 ---@return nil
 local function after_transfer(player, has_global_change)
   M.render(player)
   if has_global_change then
-    for _, other in pairs(game.players) do
-      if other.valid and other.index ~= player.index and M.frame(other) ~= nil then
-        M.render(other)
-      end
-    end
+    refresh_others(player)
   end
 end
 
@@ -875,6 +882,32 @@ local function player_of(player_index)
   local player = game.get_player(player_index)
   if player and player.valid then return player end
   return nil
+end
+
+---@param e EventData.on_player_created
+---@return nil
+function M.on_player_created(e)
+  local player = player_of(e.player_index)
+  if player == nil then return end
+
+  local setting = player.mod_settings[lib_settings.DEFAULT_SETTINGS_NAME]
+  if setting == nil then return end
+
+  local text = setting.value
+  if type(text) ~= "string" or text:match("^%s*$") then return end
+
+  local message, has_global_change, ok = run_import(player, text)
+  if not ok then
+    player.print({ "exteros-lib-hub.default-failed", message })
+    return
+  end
+
+  if #message > 1 then
+    player.print({ "exteros-lib-hub.default-applied", message })
+  end
+  if has_global_change then
+    refresh_others(player)
+  end
 end
 
 ---@param e EventData.CustomInputEvent

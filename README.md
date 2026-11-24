@@ -14,6 +14,7 @@ One settings window for every installed Exteros mod, instead of each one's own m
 - A disabled or conflict-blocked feature hides its settings.
 - Global (server-wide) settings are visible to admins only.
 - **Export / Import** - packs all settings into one line of text, to copy between servers or back up. Import reports what changed and skips what it doesn't recognize.
+- **Default settings** - paste an exported string into the "Default settings string" field in the game's mod settings (Per player) and every new map starts with it.
 
 The Hub only changes settings of installed Exteros mods.
 

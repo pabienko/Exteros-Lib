@@ -2,6 +2,9 @@ local manifest_lib = require("__exteros-lib__.internal.manifest")
 
 local M = {}
 
+M.DEFAULT_SETTINGS_NAME = "exteros-lib-default-settings"
+M.CLIENT_MARKER = "exteros_lib_has_client"
+
 local SETTING_TYPE_MAP = {
   bool = "bool-setting",
   int = "int-setting",
@@ -13,6 +16,8 @@ local SETTING_TYPE_MAP = {
 ---@return nil
 function M.extend(manifest)
   manifest_lib.validate(manifest)
+
+  rawset(_G, M.CLIENT_MARKER, true)
 
   local definitions = {}
 

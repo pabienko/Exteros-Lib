@@ -13,6 +13,7 @@ migrate.register({
 hub.init()
 
 event.on(hub.NAME, hub.on_input)
+event.on(defines.events.on_player_created, hub.on_player_created)
 event.on(defines.events.on_lua_shortcut, hub.on_lua_shortcut)
 event.on(defines.events.on_gui_click, hub.on_gui_click)
 event.on(defines.events.on_gui_checked_state_changed, hub.on_gui_checked_state_changed)
